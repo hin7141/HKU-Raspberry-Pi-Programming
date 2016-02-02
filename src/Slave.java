@@ -18,7 +18,8 @@ public class Slave {
 			port = Integer.parseInt(args[1]);
 		}
 		if (args.length <=2){
-			serverName = "127.0.0.1";
+			//serverName = "127.0.0.1";
+			serverName = "192.168.137.139";
 		} else {
 			serverName = args[0];
 		}

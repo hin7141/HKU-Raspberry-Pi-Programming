@@ -6,7 +6,14 @@ public class BigArray implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private volatile long[] array;
 
-	public static void main(String a[]){
+	public static void main(String args[]){
+		int size;
+		if(args.length < 1){
+			size = 100;
+		} else {
+			size = Integer.parseInt(args[0]);
+		}
+		System.out.println("Generating an array with " + size + " elements...");
 		BigArray array = new BigArray(100);
 		BigArray[] arrays = array.split(2);
 		array.isOrdered();
