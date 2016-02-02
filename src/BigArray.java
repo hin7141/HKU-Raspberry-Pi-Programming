@@ -8,13 +8,13 @@ public class BigArray implements Serializable {
 
 	public static void main(String args[]){
 		int size;
-		if(args.length < 1){
-			size = 100;
+		if(args.length <= 0){
+			size = 100000;
 		} else {
 			size = Integer.parseInt(args[0]);
 		}
 		System.out.println("Generating an array with " + size + " elements...");
-		BigArray array = new BigArray(100);
+		BigArray array = new BigArray(size);
 		BigArray[] arrays = array.split(2);
 		array.isOrdered();
 		long startTime = System.currentTimeMillis();

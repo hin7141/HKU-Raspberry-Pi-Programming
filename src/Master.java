@@ -4,10 +4,12 @@ import java.io.*;
 public class Master extends Thread
 {
    private ServerSocket serverSocket;
+   private int arraySize;
    
-   public Master(int port) throws IOException
+   public Master(int port, int size) throws IOException
    {
       serverSocket = new ServerSocket(port);
+      arraySize = size;
       //serverSocket.setSoTimeout(10000);
    }
 
@@ -23,7 +25,7 @@ public class Master extends Thread
             ObjectInputStream in = new ObjectInputStream(server.getInputStream());
             
             // Generate new array
-			BigArray array = new BigArray(10000);
+			BigArray array = new BigArray(arraySize);
 			array.isOrdered();
 			
 			// Begin sorting here
@@ -70,14 +72,15 @@ public class Master extends Thread
    
    public static void main(String [] args)
    {
-	  int port;
-	  if(args.length<1){
-		  port = 50001;
+	  int port = 50001;
+	  int size;
+	  if(args.length<=0){
+		  size = 1000;
 	  } else {
-		  port = Integer.parseInt(args[0]);  
+		  size = Integer.parseInt(args[0]);  
 	  }
       try {
-         Thread t = new Master(port);
+         Thread t = new Master(port,size);
          t.start();
       } catch(IOException e) {
          e.printStackTrace();
