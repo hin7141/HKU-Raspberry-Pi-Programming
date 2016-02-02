@@ -61,7 +61,7 @@ public class BigArray implements Serializable {
 	}
 	
 	public BigArray[] split(int fractions){
-		System.out.println(this);
+		//System.out.println(this);
 		BigArray[] arrays = new BigArray[fractions];
 		int partSize = array.length / fractions;
 		int begin = 0;
