@@ -4,17 +4,25 @@ import java.util.Arrays;
 public class BigArray implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private volatile long[] array;
+	private long[] array;
 
 	public static void main(String args[]){
-		int size;
+		
+		/*
 		if(args.length <= 0){
-			size = 100000;
+			BigArray.compare(10000000);
 		} else {
-			size = Integer.parseInt(args[0]);
+			int size = Integer.parseInt(args[0]);
+			BigArray.compare(size);
 		}
-		System.out.println("Generating an array with " + size + " elements...");
-		BigArray array = new BigArray(size);
+		*/
+		
+		for (int i=10000; i<=1000000000; i=(int) (i*10)){
+			BigArray.compare(i);
+		}
+		
+		
+		/*
 		BigArray[] arrays = array.split(2);
 		array.isOrdered();
 		long startTime = System.currentTimeMillis();
@@ -27,6 +35,7 @@ public class BigArray implements Serializable {
         System.out.println(elapsedTime + "ms");
         //array.print();
         //array.isOrdered();
+         */
 	}
 
 	public BigArray(int size) {
@@ -41,9 +50,60 @@ public class BigArray implements Serializable {
 		array = a;
 	}
 	
-	public void print() {
-		for(int i=0; i<array.length; i++){
-			System.out.println(array[i]);
+	@Override
+	public BigArray clone(){
+		return new BigArray(this.array);
+	}
+	
+	static private void compare(int size){
+		
+		System.out.println("Generating an array with " + size + " elements...");
+		
+		try{
+			BigArray array = new BigArray(size);
+			BigArray array2 = new BigArray(size);
+			
+			try{
+				//array.isOrdered();
+				System.out.print("Quicksort: ");
+				long startTime = System.currentTimeMillis();
+				array.quicksort();
+				long stopTime = System.currentTimeMillis();
+				//array.isOrdered();
+				long elapsedTime = stopTime - startTime;
+		        System.out.println(elapsedTime + "ms");
+		        
+			} catch(java.lang.OutOfMemoryError e){
+				System.out.println("Out Of Memory!!!");
+			}
+			
+			try{
+				//array2.isOrdered();
+		        System.out.print("Mergesort: ");
+				long startTime = System.currentTimeMillis();
+				array2.mergesort2();
+				long stopTime = System.currentTimeMillis();
+				//array2.isOrdered();
+				long elapsedTime = stopTime - startTime;
+		        System.out.println(elapsedTime + "ms");
+			} catch(java.lang.OutOfMemoryError e){
+				System.out.println("Out Of Memory!!!");
+			}
+			
+			
+			
+		} catch(java.lang.OutOfMemoryError e){
+			System.out.println("Failed: Out of Memory (Java heap space)");
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	public void initWorstCase(){
+		int size = array.length;
+		for(int i=0; i<size; i++){
+			array[i] = array.length - i;
 		}
 	}
 	
@@ -59,6 +119,15 @@ public class BigArray implements Serializable {
 		System.out.println("No. of Elements = "+array.length+"  ORDER CHECKED!");
 		return true;
 	}
+	
+	public int size(){
+    	return array.length;
+    }
+    
+    @Override
+    public String toString(){
+    	return Arrays.toString(array);
+    }
 	
 	public BigArray[] split(int fractions){
 		//System.out.println(this);
@@ -87,6 +156,10 @@ public class BigArray implements Serializable {
 		}
 		return arrays;
 	}
+	
+	/***************************************/
+	/******** Merge Sort functions *********/
+	/***************************************/
 	
 	public void mergesort() {
         int length = array.length;
@@ -142,13 +215,95 @@ public class BigArray implements Serializable {
  
     }
     
-    public int size(){
-    	return array.length;
+    /***************************************/
+    /******** Merge Sort 2 
+     * 
+     */
+    
+    public void mergesort2()
+    {
+    	long temp[] = new long[array.length];
+        mergeSort(array, temp, 0, array.length - 1);
+        
+    }
+
+    public void mergeSort(long[] fromArray, long[] toArray, int left, int right)
+    {
+        if (left < right) {
+            int center = (left + right) / 2;
+            mergeSort(fromArray, toArray, left, center);
+            mergeSort(fromArray, toArray, center + 1, right);
+            merge(fromArray, toArray, left, center + 1, right);
+        }
+    }
+
+    public void merge(long[] fromArray, long[] toArray, int leftPos,
+            int rightPos, int rightEnd)
+    {
+        int leftEnd = rightPos - 1;
+        int tempPos = leftPos;
+
+        int numElements = rightEnd - leftPos + 1;
+
+        while (leftPos <= leftEnd && rightPos <= rightEnd) {
+            if (fromArray[leftPos] < fromArray[rightPos]) {
+                toArray[tempPos++] = fromArray[leftPos++];
+            }
+            else {
+                toArray[tempPos++] = fromArray[rightPos++];
+            }
+        }
+
+        while (leftPos <= leftEnd) {
+            toArray[tempPos++] = fromArray[leftPos++];
+        }
+        while (rightPos <= rightEnd) {
+            toArray[tempPos++] = fromArray[rightPos++];
+        }
+
+        for (int i = 0; i < numElements; i++, rightEnd--) {
+            fromArray[rightEnd] = toArray[rightEnd];
+        }
+
     }
     
-    @Override
-    public String toString(){
-    	return Arrays.toString(array);
-    }
+    
+    /***************************************/
+	/******** Quick Sort functions *********/
+	/***************************************/
 	
+    void quicksort() {
+    	quicksort(0,array.length-1);
+    }
+    
+    void quicksort(int left, int right) {
+        int index = partition(left, right);
+        if (left < index - 1)
+              quicksort(left, index - 1);
+        if (index < right)
+              quicksort(index, right);
+    }
+    
+    int partition(int left, int right) {
+          int i = left, j = right;
+          long tmp;
+          long pivot = array[(left + right) / 2];
+         
+          while (i <= j) {
+                while (array[i] < pivot)
+                      i++;
+                while (array[j] > pivot)
+                      j--;
+                if (i <= j) {
+                      tmp = array[i];
+                      array[i] = array[j];
+                      array[j] = tmp;
+                      i++;
+                      j--;
+                }
+          };
+         
+          return i;
+    }
+    
 }
