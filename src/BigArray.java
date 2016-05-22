@@ -46,23 +46,28 @@ public class BigArray implements Serializable {
 		}
 	}
 	
+	// 87982393
 	public static void guessBreakPoint2(){
-		int low = 0;
-		int high = 1000000000;
+		//int low = 0;
+		int low = 87982300;
+		//int high = 100000000;
+		int high = 87982400;
 		int num = (low+high)/2;
 		while(true){
 			System.out.print(num+" ... ");
 			try{
 				BigArray ba = new BigArray(num);
 				ba.mergesort2();
-				low = num;
+				low = num+1;
 				System.out.println("ok");
 			} catch(java.lang.OutOfMemoryError e) {
-				high = num;
+				high = num-1;
 				System.out.println("out of memory");
 			}
 			num = (low+high)/2;
+			if(high<=low){ break; }
 		}
+		System.out.println("Maximum capacity: "+ (low-1));
 	}
 
 	public BigArray(int size) {
