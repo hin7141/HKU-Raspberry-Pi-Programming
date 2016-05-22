@@ -48,10 +48,8 @@ public class BigArray implements Serializable {
 	
 	// 87982393
 	public static void guessBreakPoint2(){
-		//int low = 0;
-		int low = 87982300;
-		//int high = 100000000;
-		int high = 87982400;
+		int low = 0;
+		int high = 100000000;
 		int num = (low+high)/2;
 		while(true){
 			System.out.print(num+" ... ");
