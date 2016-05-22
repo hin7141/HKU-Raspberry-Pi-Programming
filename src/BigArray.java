@@ -1,5 +1,8 @@
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 public class BigArray implements Serializable {
 
@@ -8,34 +11,58 @@ public class BigArray implements Serializable {
 
 	public static void main(String args[]){
 		
-		/*
-		if(args.length <= 0){
-			BigArray.compare(10000000);
-		} else {
-			int size = Integer.parseInt(args[0]);
-			BigArray.compare(size);
+		//87983000
+//		for (int i=87980000; i<=1000000000; i=i+1000){
+//			System.out.println("Generating "+i+" numbers...");
+//			BigArray ba = new BigArray(i);
+//			//BigArray ba2 = ba.clone();
+//			//System.out.println("Performing Quicksort...");
+//			//ba.quicksort();
+//			System.out.println("Performing Mergesort...");
+//			ba.mergesort2();
+//			ba.isOrdered();
+//		}
+		
+		guessBreakPoint2();
+
+	}
+	
+	public static void guessBreakPoint(){
+		int safe = 0;
+		int num = safe;
+		int step = 1000000000;
+		while(true){
+			System.out.println(num);
+			try{
+				//test
+				BigArray ba = new BigArray(num);
+				ba.mergesort2();
+				safe = num;
+				num = num + step;
+			} catch(java.lang.OutOfMemoryError e) {
+				step = step / 10;
+				num = safe + step;
+			}
 		}
-		*/
-		
-		for (int i=10000; i<=1000000000; i=(int) (i*10)){
-			BigArray.compare(i);
+	}
+	
+	public static void guessBreakPoint2(){
+		int low = 0;
+		int high = 1000000000;
+		int num = (low+high)/2;
+		while(true){
+			System.out.print(num+" ... ");
+			try{
+				BigArray ba = new BigArray(num);
+				ba.mergesort2();
+				low = num;
+				System.out.println("ok");
+			} catch(java.lang.OutOfMemoryError e) {
+				high = num;
+				System.out.println("out of memory");
+			}
+			num = (low+high)/2;
 		}
-		
-		
-		/*
-		BigArray[] arrays = array.split(2);
-		array.isOrdered();
-		long startTime = System.currentTimeMillis();
-        arrays[0].mergesort();
-        arrays[1].mergesort();
-        arrays[0].mergeParts(arrays[1]);
-        long stopTime = System.currentTimeMillis();
-        arrays[0].isOrdered();
-        long elapsedTime = stopTime - startTime;
-        System.out.println(elapsedTime + "ms");
-        //array.print();
-        //array.isOrdered();
-         */
 	}
 
 	public BigArray(int size) {
@@ -156,69 +183,10 @@ public class BigArray implements Serializable {
 		}
 		return arrays;
 	}
-	
-	/***************************************/
-	/******** Merge Sort functions *********/
-	/***************************************/
-	
-	public void mergesort() {
-        int length = array.length;
-        mergesort(0, length - 1);
-    }
-	
-    public void mergesort(int lowerIndex, int higherIndex) {
-         
-        if (lowerIndex < higherIndex) {
-            int middle = lowerIndex + (higherIndex - lowerIndex) / 2;
-            // Below step sorts the left side of the array
-            mergesort(lowerIndex, middle);
-            // Below step sorts the right side of the array
-            mergesort(middle + 1, higherIndex);
-            // Now merge both sides
-            mergeParts(lowerIndex, middle, higherIndex);
-        }
-        
-    }
-    
-    public void mergeParts(BigArray ba){
-    	int oriLength = array.length;
-    	//System.out.println("array.length="+array.length + "   ba.size()="+ba.size());
-    	array = Arrays.copyOf(array, array.length + ba.size());
-    	//System.out.println("array.length="+array.length);
-    	System.arraycopy(ba.array, 0, array, oriLength, ba.size());
-    	mergeParts(0,oriLength-1,array.length-1);
-    }
-    
-    private void mergeParts(int lowerIndex, int middle, int higherIndex) {
-    	long[] tempMergArr = array.clone();
-        for (int i = lowerIndex; i <= higherIndex; i++) {
-            tempMergArr[i] = array[i];
-        }
-        int i = lowerIndex;
-        int j = middle + 1;
-        int k = lowerIndex;
-        while (i <= middle && j <= higherIndex) {
-            if (tempMergArr[i] <= tempMergArr[j]) {
-                array[k] = tempMergArr[i];
-                i++;
-            } else {
-                array[k] = tempMergArr[j];
-                j++;
-            }
-            k++;
-        }
-        while (i <= middle) {
-            array[k] = tempMergArr[i];
-            k++;
-            i++;
-        }
- 
-    }
     
     /***************************************/
-    /******** Merge Sort 2 
-     * 
-     */
+    /******** Merge Sort Functions *********/ 
+	/***************************************/
     
     public void mergesort2()
     {
@@ -227,17 +195,17 @@ public class BigArray implements Serializable {
         
     }
 
-    public void mergeSort(long[] fromArray, long[] toArray, int left, int right)
+    public void mergeSort(long[] array, long[] temp, int left, int right)
     {
         if (left < right) {
             int center = (left + right) / 2;
-            mergeSort(fromArray, toArray, left, center);
-            mergeSort(fromArray, toArray, center + 1, right);
-            merge(fromArray, toArray, left, center + 1, right);
+            mergeSort(array, temp, left, center);
+            mergeSort(array, temp, center + 1, right);
+            merge(array, temp, left, center + 1, right);
         }
     }
 
-    public void merge(long[] fromArray, long[] toArray, int leftPos,
+    public void merge(long[] array, long[] temp, int leftPos,
             int rightPos, int rightEnd)
     {
         int leftEnd = rightPos - 1;
@@ -246,23 +214,23 @@ public class BigArray implements Serializable {
         int numElements = rightEnd - leftPos + 1;
 
         while (leftPos <= leftEnd && rightPos <= rightEnd) {
-            if (fromArray[leftPos] < fromArray[rightPos]) {
-                toArray[tempPos++] = fromArray[leftPos++];
+            if (array[leftPos] < array[rightPos]) {
+                temp[tempPos++] = array[leftPos++];
             }
             else {
-                toArray[tempPos++] = fromArray[rightPos++];
+                temp[tempPos++] = array[rightPos++];
             }
         }
 
         while (leftPos <= leftEnd) {
-            toArray[tempPos++] = fromArray[leftPos++];
+            temp[tempPos++] = array[leftPos++];
         }
         while (rightPos <= rightEnd) {
-            toArray[tempPos++] = fromArray[rightPos++];
+            temp[tempPos++] = array[rightPos++];
         }
 
         for (int i = 0; i < numElements; i++, rightEnd--) {
-            fromArray[rightEnd] = toArray[rightEnd];
+            array[rightEnd] = temp[rightEnd];
         }
 
     }
