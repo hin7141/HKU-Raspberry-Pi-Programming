@@ -26,7 +26,7 @@ public class Master extends Thread
             
             // Generate new array
 			BigArray array = new BigArray(arraySize);
-			array.isOrdered();
+			array.isSorted();
 			
 			// Begin sorting here
 			long startTime = System.currentTimeMillis();
@@ -49,7 +49,7 @@ public class Master extends Thread
 			array = arrays[0];
 			long stopTime = System.currentTimeMillis();
 	        long elapsedTime = stopTime - startTime;
-	        array.isOrdered();
+	        array.isSorted();
 	        System.out.println(elapsedTime + "ms");
             
             server.close();

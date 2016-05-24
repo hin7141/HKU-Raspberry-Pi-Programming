@@ -1,4 +1,6 @@
 import java.io.Serializable;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,19 +13,18 @@ public class BigArray implements Serializable {
 
 	public static void main(String args[]){
 		
-		//87983000
-//		for (int i=87980000; i<=1000000000; i=i+1000){
-//			System.out.println("Generating "+i+" numbers...");
-//			BigArray ba = new BigArray(i);
-//			//BigArray ba2 = ba.clone();
-//			//System.out.println("Performing Quicksort...");
-//			//ba.quicksort();
-//			System.out.println("Performing Mergesort...");
-//			ba.mergesort2();
-//			ba.isOrdered();
-//		}
+//		ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+//		int size = 1000000;
+//		BigArray big_array = new BigArray(size);
+//		long start = threadMXBean.getCurrentThreadCpuTime();
+//		big_array.mergesort();
+//		long end = threadMXBean.getCurrentThreadCpuTime();
+//		big_array.isSorted();
+//		System.out.println("Time = " + (end-start)/1000000.0 + "ms");
 		
-		guessBreakPoint2();
+//		guessBreakPoint2();
+		
+		BigArray.compare(50000000);
 
 	}
 	
@@ -36,7 +37,7 @@ public class BigArray implements Serializable {
 			try{
 				//test
 				BigArray ba = new BigArray(num);
-				ba.mergesort2();
+				ba.mergesort();
 				safe = num;
 				num = num + step;
 			} catch(java.lang.OutOfMemoryError e) {
@@ -48,21 +49,25 @@ public class BigArray implements Serializable {
 	
 	// 87982393
 	public static void guessBreakPoint2(){
+		Runtime runtime = Runtime.getRuntime();
+		long maxMemory = runtime.maxMemory();
 		int low = 0;
-		int high = 100000000;
+		int high = 1000000000;
 		int num = (low+high)/2;
 		while(true){
 			System.out.print(num+" ... ");
 			try{
 				BigArray ba = new BigArray(num);
-				ba.mergesort2();
+				ba.quicksort();
 				low = num+1;
 				System.out.println("ok");
+				maxMemory = runtime.maxMemory();
+				System.out.println("Max memory: "+maxMemory);
 			} catch(java.lang.OutOfMemoryError e) {
 				high = num-1;
 				System.out.println("out of memory");
 			}
-			num = (low+high)/2;
+			num = (low+high)/2 +1;
 			if(high<=low){ break; }
 		}
 		System.out.println("Maximum capacity: "+ (low-1));
@@ -70,10 +75,7 @@ public class BigArray implements Serializable {
 
 	public BigArray(int size) {
 		array = new long[size];
-		for (int i=0; i<size; i++){
-			array[i] = Math.round( Math.random()*(Math.pow(2, 63)-1) );
-			//System.out.println(array[i]);
-		}
+		
 	}
 	
 	public BigArray(long[] a){
@@ -87,6 +89,7 @@ public class BigArray implements Serializable {
 	
 	static private void compare(int size){
 		
+		ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 		System.out.println("Generating an array with " + size + " elements...");
 		
 		try{
@@ -96,11 +99,11 @@ public class BigArray implements Serializable {
 			try{
 				//array.isOrdered();
 				System.out.print("Quicksort: ");
-				long startTime = System.currentTimeMillis();
+				double startTime = threadMXBean.getCurrentThreadCpuTime() / 1000000.0;
 				array.quicksort();
-				long stopTime = System.currentTimeMillis();
+				double stopTime = threadMXBean.getCurrentThreadCpuTime() / 1000000.0;
 				//array.isOrdered();
-				long elapsedTime = stopTime - startTime;
+				double elapsedTime = stopTime - startTime;
 		        System.out.println(elapsedTime + "ms");
 		        
 			} catch(java.lang.OutOfMemoryError e){
@@ -111,7 +114,7 @@ public class BigArray implements Serializable {
 				//array2.isOrdered();
 		        System.out.print("Mergesort: ");
 				long startTime = System.currentTimeMillis();
-				array2.mergesort2();
+				array2.mergesort();
 				long stopTime = System.currentTimeMillis();
 				//array2.isOrdered();
 				long elapsedTime = stopTime - startTime;
@@ -130,6 +133,20 @@ public class BigArray implements Serializable {
 		
 	}
 	
+	public void initBestCase(){
+		int size = array.length;
+		for (int i=0; i<size; i++){
+			array[i] = i;
+		}
+	}
+	
+	public void initRandomCase(){
+		int size = array.length;
+		for (int i=0; i<size; i++){
+			array[i] = Math.round( Math.random()*(Math.pow(2, 63)-1) );
+		}
+	}
+	
 	public void initWorstCase(){
 		int size = array.length;
 		for(int i=0; i<size; i++){
@@ -137,7 +154,7 @@ public class BigArray implements Serializable {
 		}
 	}
 	
-	public boolean isOrdered(){
+	public boolean isSorted(){
 		for(int i=0; i<array.length-1; i++){
 			if(array[i+1]>=array[i]){
 				continue;
@@ -191,7 +208,7 @@ public class BigArray implements Serializable {
     /******** Merge Sort Functions *********/ 
 	/***************************************/
     
-    public void mergesort2()
+    public void mergesort()
     {
     	long temp[] = new long[array.length];
         mergeSort(array, temp, 0, array.length - 1);
