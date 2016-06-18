@@ -401,16 +401,18 @@ public class BigArray implements Serializable {
 	/************ I/O functions ************/
 	/***************************************/
     
+    private int step = 100;
+    
     public void inputFromStream(ObjectInputStream in, int start, int end) throws ClassNotFoundException, IOException{
     	int stage = 0;
-		for (int i=start; i<end+1; i++){
-			long val = (long) in.readObject();
-			array[i] = val;
+		for (int i=start; i<end+1; i = i+step){
+			long val[] = (long[]) in.readObject();
+			System.arraycopy(val, 0, array, i, val.length);
 			
 			double percentage = (double)(i-start) / (end+1 - start) * 100;
 			if(percentage>stage){
 				System.out.print(stage+"%... ");
-				stage = stage + 1;
+				stage = (i-start) / (end+1 - start) * 100 +1;
 			}
 		}
 		System.out.println();
@@ -418,8 +420,10 @@ public class BigArray implements Serializable {
 	}
     
     public void outputToStream(ObjectOutputStream out, int start, int end) throws ClassNotFoundException, IOException{
-		for (int i=start; i<end+1; i++){
-			out.writeObject(array[i]);
+		for (int i=start; i<end+1; i=i+step){
+			int part_end = i+step;
+			if(part_end>end){part_end = end;}
+			out.writeObject(Arrays.copyOfRange(array, i, part_end));
 		}
 	}
     

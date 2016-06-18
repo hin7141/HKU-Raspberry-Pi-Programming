@@ -74,6 +74,7 @@ public class Master extends Thread {
 	
 	public static void main(String args[]){
 		int size = 20000000;
+		size = 1000;
 		int port = 12345;
 		String ip[] = {"127.0.0.1"};
 		
