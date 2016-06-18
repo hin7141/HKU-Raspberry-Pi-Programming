@@ -43,7 +43,7 @@ public class Worker extends Thread {
 				System.out.println("Done! Merging time = " + (end-start)/1000000.0 + "ms");
 				
 				System.out.println("Sending the merged array...");
-				out.writeObject(incomingArray);
+				incomingArray.outputToStream(out, incomingArray.get_start(), incomingArray.get_end());
 				System.out.println("All done!");
 				server.close();
 				

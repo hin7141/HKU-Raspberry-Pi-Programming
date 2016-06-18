@@ -8,6 +8,7 @@ public class Master extends Thread {
 	
 	private Socket[] workers;
 	private BigArray array;
+	private int boundary[][];
 	
 	public Master(String ip[], int port, int arraysize){
 		workers = new Socket[ip.length];
@@ -23,20 +24,21 @@ public class Master extends Thread {
 		
 		array = new BigArray(arraysize);
 		array.isSorted();
+		boundary = array.split_boundary(ip.length+1);
 	}
 	
 	@Override
 	public void run(){
-		BigArray[] partitions = array.split(workers.length+1);
 		ObjectOutputStream out;
 		ObjectInputStream in;
 
 		// send out partitions
 		for(int i=0; i<workers.length; i++){
 			System.out.println("Sending partition " + i+1 + "...");
+			array.set_boundary(boundary[i+1][0], boundary[i+1][1]);
 			try {
 				out = new ObjectOutputStream(workers[i].getOutputStream());
-				out.writeObject(partitions[i]);
+				out.writeObject(array);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}	
@@ -44,18 +46,18 @@ public class Master extends Thread {
 		
 		// sort own partition
 		System.out.println("Start sorting a part of the array...");
-		partitions[workers.length].mergesort();
+		array.set_boundary(boundary[0][0], boundary[0][1]);
+		array.mergesort();
 		System.out.println("Done!");
-		array = partitions[workers.length];
 		
 		// collect partitions
 		for(int i=0; i<workers.length; i++){
 			try {
 				System.out.println("Waiting for partition " + i+1);
 				in = new ObjectInputStream(workers[i].getInputStream());
-				BigArray receivedArray = (BigArray) in.readObject();
+				array.inputFromStream(in, boundary[i+1][0], boundary[i+1][1]);
 				System.out.println("Merging array...");
-				array.mergeParts(receivedArray);
+				array.mergeParts(0, boundary[i+1][0], boundary[i+1][1]);
 				System.out.println("OK!");
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -67,6 +69,8 @@ public class Master extends Thread {
 		array.isSorted();
 		//System.out.println(array.toString());
 	}
+	
+	
 	
 	public static void main(String args[]){
 		int size = 20000000;

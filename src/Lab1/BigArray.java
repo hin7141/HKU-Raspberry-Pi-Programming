@@ -1,5 +1,8 @@
 package Lab1;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
@@ -10,6 +13,7 @@ public class BigArray implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private long[] array;
+	private int start, end;
 
 	public static void main(String args[]){
 		
@@ -86,6 +90,8 @@ public class BigArray implements Serializable {
 	public BigArray(int size) {
 		array = new long[size];
 		this.initRandomCase();
+		start = 0;
+		end = size-1;
 	}
 	
 	public BigArray(long[] a){
@@ -185,6 +191,27 @@ public class BigArray implements Serializable {
     public String toString(){
     	return Arrays.toString(array);
     }
+    
+    public long get(int index){
+    	return array[index];
+    }
+    
+    public void set(int index, long val){
+    	array[index] = val;
+    }
+    
+    public int get_start(){
+    	return start;
+    }
+    
+    public int get_end(){
+    	return end;
+    }
+    
+    public void set_boundary(int start, int end){
+    	this.start = start;
+    	this.end = end;
+    }
 	
 	public BigArray[] split(int fractions){
 		//System.out.println(this);
@@ -213,6 +240,34 @@ public class BigArray implements Serializable {
 		}
 		return arrays;
 	}
+	
+	public int[][] split_boundary(int fractions){
+		int partSize = array.length / fractions;
+		int begin = 0;
+		int end = partSize;
+		int boundaries[][] = new int[fractions][2];
+		for(int i=0; i<fractions; i++){
+			
+			if(i == fractions-1){
+				end = array.length;
+			}
+			
+			System.out.println(i + ": Array from " + begin + " to " + (end-1));
+			boundaries[i][0]=begin;
+			boundaries[i][1]=end-1;
+			//System.out.println(arrays[i].size()+" | "+arrays[i]);
+			
+			begin = end;
+			if(i != fractions-1){
+				partSize = (array.length - begin)/(fractions-i-1);
+			}
+			end = begin + partSize;
+			if(end>array.length){
+				end = array.length;
+			}
+		}
+		return boundaries;
+	}
     
     /***************************************/
     /******** Merge Sort Functions *********/ 
@@ -221,11 +276,11 @@ public class BigArray implements Serializable {
     public void mergesort()
     {
     	long temp[] = new long[array.length];
-        mergeSort(array, temp, 0, array.length - 1);
+        mergeSort(array, temp, start, end);
         
     }
 
-    public void mergeSort(long[] array, long[] temp, int left, int right)
+    private void mergeSort(long[] array, long[] temp, int left, int right)
     {
         if (left < right) {
             int center = (left + right) / 2;
@@ -235,7 +290,7 @@ public class BigArray implements Serializable {
         }
     }
 
-    public void merge(long[] array, long[] temp, int leftPos,
+    private void merge(long[] array, long[] temp, int leftPos,
             int rightPos, int rightEnd)
     {
         int leftEnd = rightPos - 1;
@@ -265,16 +320,21 @@ public class BigArray implements Serializable {
 
     }
     
-    public void mergeParts(BigArray bigArray2){
-    	int array1_size = this.size();
-    	long temp[] = new long[this.size()+bigArray2.size()];
-    	this.array = Arrays.copyOf(this.array, array1_size+bigArray2.size());
-    	for(int i=0; i<bigArray2.size(); i++){
-    		this.array[array1_size+i]=bigArray2.array[i];
-    	}
-    	
-    	merge(array, temp, 0, array1_size, this.size()-1);
-    	
+//    public void mergeParts(BigArray bigArray2){
+//    	int array1_size = this.size();
+//    	long temp[] = new long[this.size()+bigArray2.size()];
+//    	this.array = Arrays.copyOf(this.array, array1_size+bigArray2.size());
+//    	for(int i=0; i<bigArray2.size(); i++){
+//    		this.array[array1_size+i]=bigArray2.array[i];
+//    	}
+//    	
+//    	merge(array, temp, 0, array1_size, this.size()-1);
+//    	
+//    }
+    
+    public void mergeParts(int leftStart, int rightStart, int rightEnd){
+    	long temp[] = new long[array.length];
+    	this.merge(array, temp, leftStart, rightStart, rightEnd);
     }
     
     
@@ -315,5 +375,31 @@ public class BigArray implements Serializable {
          
           return i;
     }
+    
+    /***************************************/
+	/************ I/O functions ************/
+	/***************************************/
+    
+    public void inputFromStream(ObjectInputStream in, int start, int end) throws ClassNotFoundException, IOException{
+    	int stage = 0;
+		for (int i=start; i<end+1; i++){
+			long val = (long) in.readObject();
+			array[i] = val;
+			double percentage = (double)(i-start) / (end+1 - start) * 100;
+			if(percentage>stage){
+				System.out.print(stage+"%... ");
+				stage = stage + 1;
+			}
+		}
+		System.out.println();
+	}
+    
+    public void outputToStream(ObjectOutputStream out, int start, int end) throws ClassNotFoundException, IOException{
+		for (int i=start; i<end+1; i++){
+			out.writeObject(array[i]);
+		}
+	}
+    
+    
     
 }
