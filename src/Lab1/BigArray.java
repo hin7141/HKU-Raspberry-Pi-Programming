@@ -1,3 +1,5 @@
+package Lab1;
+
 import java.io.Serializable;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
@@ -22,9 +24,9 @@ public class BigArray implements Serializable {
 //		big_array.isSorted();
 //		System.out.println("Time = " + (end-start)/1000000.0 + "ms");
 		
-//		guessBreakPoint2();
+		guessBreakPoint2();
 		
-		BigArray.compare(50000000);
+//		BigArray.compare(50000000);
 
 	}
 	
@@ -75,7 +77,7 @@ public class BigArray implements Serializable {
 
 	public BigArray(int size) {
 		array = new long[size];
-		
+		this.initRandomCase();
 	}
 	
 	public BigArray(long[] a){
@@ -253,6 +255,18 @@ public class BigArray implements Serializable {
             array[rightEnd] = temp[rightEnd];
         }
 
+    }
+    
+    public void mergeParts(BigArray bigArray2){
+    	int array1_size = this.size();
+    	long temp[] = new long[this.size()+bigArray2.size()];
+    	this.array = Arrays.copyOf(this.array, array1_size+bigArray2.size());
+    	for(int i=0; i<bigArray2.size(); i++){
+    		this.array[array1_size+i]=bigArray2.array[i];
+    	}
+    	
+    	merge(array, temp, 0, array1_size, this.size()-1);
+    	
     }
     
     

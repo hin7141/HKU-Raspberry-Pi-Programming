@@ -54,6 +54,7 @@ public class Master extends Thread
             
             server.close();
             
+            
          } catch(SocketTimeoutException s) {
             System.out.println("Socket timed out!");
             break;
@@ -72,10 +73,10 @@ public class Master extends Thread
    
    public static void main(String [] args)
    {
-	  int port = 50001;
+	  int port = 50004;
 	  int size;
 	  if(args.length<=0){
-		  size = 1000;
+		  size = 100000000;
 	  } else {
 		  size = Integer.parseInt(args[0]);  
 	  }

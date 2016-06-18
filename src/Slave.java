@@ -13,13 +13,13 @@ public class Slave {
 		String serverName;
 		int port;
 		if(args.length <= 1){
-			port = 50001;
+			port = 50004;
 		} else {
 			port = Integer.parseInt(args[1]);
 		}
 		if (args.length <=2){
-			//serverName = "127.0.0.1";
-			serverName = "192.168.137.139";
+			serverName = "127.0.0.1";
+			//serverName = "192.168.137.139";
 		} else {
 			serverName = args[0];
 		}
