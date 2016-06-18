@@ -69,12 +69,17 @@ public class Master extends Thread {
 	}
 	
 	public static void main(String args[]){
+		int size = 20000000;
 		int port = 12345;
 		String ip[] = {"127.0.0.1"};
+		
 		if (args.length>0){
-			port = Integer.parseInt(args[0]);
+			size = Integer.parseInt(args[0]);
 		}
 		if (args.length>1){
+			port = Integer.parseInt(args[1]);
+		}
+		if (args.length>2){
 			String assign_ip[] = Arrays.copyOfRange(args, 1, args.length-1);
 			ip = assign_ip;
 		}
@@ -83,7 +88,7 @@ public class Master extends Thread {
 //		ip = assign_ip;
 		
 		
-		Master master = new Master(ip, port, 30000000);
+		Master master = new Master(ip, port, size);
 		master.start();
 	}
 	
