@@ -80,7 +80,7 @@ public class Master extends Thread {
 			port = Integer.parseInt(args[1]);
 		}
 		if (args.length>2){
-			String assign_ip[] = Arrays.copyOfRange(args, 2, args.length-1);
+			String assign_ip[] = Arrays.copyOfRange(args, 2, args.length);
 			ip = assign_ip;
 		}
 		
