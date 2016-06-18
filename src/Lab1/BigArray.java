@@ -3,10 +3,8 @@ package Lab1;
 import java.io.Serializable;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+
 
 public class BigArray implements Serializable {
 

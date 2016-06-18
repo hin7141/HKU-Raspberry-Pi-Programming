@@ -67,7 +67,7 @@ public class Master extends Thread {
 			port = Integer.parseInt(args[0]);
 		}
 		String ip[] = {"127.0.0.1"};
-		Master master = new Master(ip, port, 100000000);
+		Master master = new Master(ip, port, 10000);
 		master.start();
 	}
 	
