@@ -335,9 +335,28 @@ public class BigArray implements Serializable {
 //    }
     
     public void mergeParts(int leftStart, int rightStart, int rightEnd){
-    	long temp[] = new long[rightEnd-leftStart+1];
-    	this.merge(array, temp, leftStart, rightStart, rightEnd);
+    	int i=leftStart;
+		while(i<=rightStart){
+			if(array[i]>array[rightStart]){
+				swap(i,rightStart);
+				push(rightStart,rightEnd);
+			}			
+			i++;
+		}	
     }
+    
+    private void swap(int loc1,int loc2){
+		array[loc1]=array[loc1]^array[loc2];
+		array[loc2]=array[loc1]^array[loc2];
+		array[loc1]=array[loc1]^array[loc2];
+	}
+    
+    private void push(int s,int e){
+		for(int i=s;i<e;i++){
+			if(array[i]>array[i+1])
+				swap(i,i+1);
+		}
+	}
     
     
     /***************************************/
