@@ -13,7 +13,7 @@ public class BigArray implements Serializable {
 
 	public static void main(String args[]){
 		
-//		ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+		ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 //		int size = 1000000;
 //		BigArray big_array = new BigArray(size);
 //		long start = threadMXBean.getCurrentThreadCpuTime();
@@ -22,9 +22,19 @@ public class BigArray implements Serializable {
 //		big_array.isSorted();
 //		System.out.println("Time = " + (end-start)/1000000.0 + "ms");
 		
-		guessBreakPoint2();
+//		guessBreakPoint2();
 		
-//		BigArray.compare(50000000);
+		int size = 100000;
+		if(args.length>0){
+			size = Integer.parseInt(args[0]);
+		}
+		BigArray ba = new BigArray(size);
+		ba.isSorted();
+		long start = threadMXBean.getCurrentThreadCpuTime();
+		ba.mergesort();
+		long end = threadMXBean.getCurrentThreadCpuTime();
+		ba.isSorted();
+		System.out.println("Time = " + (end-start)/1000000.0 + "ms");
 
 	}
 	

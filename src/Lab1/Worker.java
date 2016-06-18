@@ -1,5 +1,7 @@
 package Lab1;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.net.*;
 import java.io.*;
 
@@ -18,6 +20,7 @@ public class Worker extends Thread {
 
 	@Override
 	public void run(){
+		ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 		while(true){
 			System.out.println("Waiting for master on port " + serverSocket.getLocalPort() + "...");
 			try {
@@ -27,10 +30,21 @@ public class Worker extends Thread {
 				ObjectInputStream in = new ObjectInputStream(server.getInputStream());
 				ObjectOutputStream out = new ObjectOutputStream(server.getOutputStream());
 				
+				System.out.println("Start reading the incoming Array...");
+				long start = threadMXBean.getCurrentThreadCpuTime();
 				BigArray incomingArray = (BigArray) in.readObject();
-				incomingArray.mergesort();
-				out.writeObject(incomingArray);
+				long end = threadMXBean.getCurrentThreadCpuTime();
+				System.out.println("Done! Transmission time = " + (end-start)/1000000.0 + "ms");
 				
+				System.out.println("Start merging the incoming Array...");
+				start = threadMXBean.getCurrentThreadCpuTime();
+				incomingArray.mergesort();
+				end = threadMXBean.getCurrentThreadCpuTime();
+				System.out.println("Done! Merging time = " + (end-start)/1000000.0 + "ms");
+				
+				System.out.println("Sending the merged array...");
+				out.writeObject(incomingArray);
+				System.out.println("All done!");
 				server.close();
 				
 			} catch (IOException | ClassNotFoundException e) {

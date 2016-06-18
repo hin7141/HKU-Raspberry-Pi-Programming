@@ -1,6 +1,7 @@
 package Lab1;
 
 import java.net.*;
+import java.util.Arrays;
 import java.io.*;
 
 public class Master extends Thread {
@@ -32,6 +33,7 @@ public class Master extends Thread {
 
 		// send out partitions
 		for(int i=0; i<workers.length; i++){
+			System.out.println("Sending partition " + i+1 + "...");
 			try {
 				out = new ObjectOutputStream(workers[i].getOutputStream());
 				out.writeObject(partitions[i]);
@@ -41,15 +43,20 @@ public class Master extends Thread {
 		}
 		
 		// sort own partition
+		System.out.println("Start sorting a part of the array...");
 		partitions[workers.length].mergesort();
+		System.out.println("Done!");
 		array = partitions[workers.length];
 		
 		// collect partitions
 		for(int i=0; i<workers.length; i++){
 			try {
+				System.out.println("Waiting for partition " + i+1);
 				in = new ObjectInputStream(workers[i].getInputStream());
 				BigArray receivedArray = (BigArray) in.readObject();
+				System.out.println("Merging array...");
 				array.mergeParts(receivedArray);
+				System.out.println("OK!");
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (ClassNotFoundException e) {
@@ -63,11 +70,20 @@ public class Master extends Thread {
 	
 	public static void main(String args[]){
 		int port = 12345;
+		String ip[] = {"127.0.0.1"};
 		if (args.length>0){
 			port = Integer.parseInt(args[0]);
 		}
-		String ip[] = {"127.0.0.1"};
-		Master master = new Master(ip, port, 10000);
+		if (args.length>1){
+			String assign_ip[] = Arrays.copyOfRange(args, 1, args.length-1);
+			ip = assign_ip;
+		}
+		
+//		String assign_ip[] = {"192.168.1.103","192.168.1.104"};
+//		ip = assign_ip;
+		
+		
+		Master master = new Master(ip, port, 30000000);
 		master.start();
 	}
 	
