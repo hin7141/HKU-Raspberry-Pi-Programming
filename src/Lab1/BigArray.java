@@ -275,7 +275,7 @@ public class BigArray implements Serializable {
     
     public void mergesort()
     {
-    	long temp[] = new long[array.length];
+    	long temp[] = new long[end-start+1];
         mergeSort(array, temp, start, end);
         
     }
@@ -333,7 +333,7 @@ public class BigArray implements Serializable {
 //    }
     
     public void mergeParts(int leftStart, int rightStart, int rightEnd){
-    	long temp[] = new long[array.length];
+    	long temp[] = new long[rightEnd-leftStart+1];
     	this.merge(array, temp, leftStart, rightStart, rightEnd);
     }
     
