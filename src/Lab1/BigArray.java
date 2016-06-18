@@ -33,6 +33,7 @@ public class BigArray implements Serializable {
 			size = Integer.parseInt(args[0]);
 		}
 		BigArray ba = new BigArray(size);
+		
 		ba.isSorted();
 		long start = threadMXBean.getCurrentThreadCpuTime();
 		ba.mergesort();
@@ -294,7 +295,8 @@ public class BigArray implements Serializable {
             int rightPos, int rightEnd)
     {
         int leftEnd = rightPos - 1;
-        int tempPos = leftPos;
+        int tempPos = leftPos - leftPos; // <-
+        int left = leftPos; // <-
 
         int numElements = rightEnd - leftPos + 1;
 
@@ -315,7 +317,8 @@ public class BigArray implements Serializable {
         }
 
         for (int i = 0; i < numElements; i++, rightEnd--) {
-            array[rightEnd] = temp[rightEnd];
+        	System.out.println(rightEnd);
+            array[rightEnd] = temp[rightEnd - left]; //<-
         }
 
     }
@@ -385,6 +388,7 @@ public class BigArray implements Serializable {
 		for (int i=start; i<end+1; i++){
 			long val = (long) in.readObject();
 			array[i] = val;
+			
 			double percentage = (double)(i-start) / (end+1 - start) * 100;
 			if(percentage>stage){
 				System.out.print(stage+"%... ");
@@ -392,6 +396,7 @@ public class BigArray implements Serializable {
 			}
 		}
 		System.out.println();
+		
 	}
     
     public void outputToStream(ObjectOutputStream out, int start, int end) throws ClassNotFoundException, IOException{
