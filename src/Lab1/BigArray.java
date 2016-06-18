@@ -317,7 +317,6 @@ public class BigArray implements Serializable {
         }
 
         for (int i = 0; i < numElements; i++, rightEnd--) {
-        	System.out.println(rightEnd);
             array[rightEnd] = temp[rightEnd - left]; //<-
         }
 
