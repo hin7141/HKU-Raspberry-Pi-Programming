@@ -2,6 +2,9 @@
 # desc: Demo L2CAP server for pybluez.
 # $Id: l2capserver.py 524 2007-08-15 04:04:52Z albert $
 
+import os
+import sys
+import struct
 import bluetooth
 
 bdaddr = bluetooth.read_local_bdaddr()
