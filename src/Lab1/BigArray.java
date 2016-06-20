@@ -526,8 +526,8 @@ public class BigArray implements Serializable {
 			if(percentage>stage){
 				System.out.print((int)percentage+"%... ");
 				stage = (int)percentage + 1;
+				System.gc();
 			}
-			in.reset();
 		}
 		System.out.println();
 		
@@ -538,7 +538,6 @@ public class BigArray implements Serializable {
 			int part_end = i+step;
 			if(part_end>end){part_end = end;}
 			out.writeObject(Arrays.copyOfRange(array, i, part_end+1));
-			out.reset();
 		}
 	}
     
