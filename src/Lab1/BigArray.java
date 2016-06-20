@@ -345,34 +345,35 @@ public class BigArray implements Serializable {
     		} else {
     			temp[temp_i++] = array[right++];
     		}
-    		
     		if(temp_i>=step){
-    			out.writeObject(temp);
+    			out.writeUnshared(temp);
     			temp_i=0;
-    			temp = new long[step];
+    			//temp = new long[step];
     		}
     	}
     	
     	while (left < rightStart) {
             temp[temp_i++] = array[left++];
             if(temp_i>=step){
-    			out.writeObject(temp);
+    			out.writeUnshared(temp);
     			temp_i=0;
-    			temp = new long[step];
+    			Arrays.fill(temp, 0);
+    			//temp = new long[step];
     		}
         }
     	
         while (right < rightEnd+1) {
         	temp[temp_i++] = array[right++];
         	if(temp_i>=step){
-    			out.writeObject(temp);
+    			out.writeUnshared(temp);
     			temp_i=0;
-    			temp = new long[step];
+    			Arrays.fill(temp, 0);
+    			//temp = new long[step];
     		}
         }
         
         if(temp_i>0){
-        	out.writeObject(Arrays.copyOf(temp, temp_i));
+        	out.writeUnshared(Arrays.copyOf(temp, temp_i));
         }
 		
 	}
@@ -537,7 +538,7 @@ public class BigArray implements Serializable {
 		for (int i=start; i<end+1; i=i+step){
 			int part_end = i+step;
 			if(part_end>end){part_end = end;}
-			out.writeObject(Arrays.copyOfRange(array, i, part_end+1));
+			out.writeUnshared(Arrays.copyOfRange(array, i, part_end+1));
 		}
 	}
     
