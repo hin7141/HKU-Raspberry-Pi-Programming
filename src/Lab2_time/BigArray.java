@@ -462,7 +462,7 @@ public class BigArray implements Serializable {
 	/************ I/O functions ************/
 	/***************************************/
     
-    private int step = 100;
+    private int step = 10000;
     
     public void setRemoteBoundary(ObjectOutputStream out, int start, int end) throws ClassNotFoundException, IOException{
     	int boundary[] = {start, end};
