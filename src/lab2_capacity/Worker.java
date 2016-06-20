@@ -1,4 +1,4 @@
-package Lab1;
+package lab2_capacity;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;

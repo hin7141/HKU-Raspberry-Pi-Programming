@@ -1,4 +1,4 @@
-package Lab2_time;
+package lab2_time;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

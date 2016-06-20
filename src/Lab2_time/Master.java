@@ -1,4 +1,4 @@
-package Lab2_time;
+package lab2_time;
 
 import java.net.*;
 import java.util.Arrays;

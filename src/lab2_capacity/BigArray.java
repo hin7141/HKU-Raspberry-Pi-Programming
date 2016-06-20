@@ -1,4 +1,4 @@
-package Lab1;
+package lab2_capacity;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

@@ -1,4 +1,4 @@
-package Lab1;
+package lab2_capacity;
 
 import java.net.*;
 import java.util.Arrays;
