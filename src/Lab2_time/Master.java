@@ -81,7 +81,7 @@ public class Master extends Thread {
 		}
 		
 		long end = threadMXBean.getCurrentThreadCpuTime();
-		System.out.println("Done! Transmission time = " + (end-start)/1000000.0 + "ms");
+		System.out.println("Done! Sorting time = " + (end-start)/1000000.0 + "ms");
 	}
 	
 	
