@@ -32,7 +32,13 @@ public class Worker extends Thread {
 				
 				System.out.println("Start reading the incoming Array...");
 				long start = threadMXBean.getCurrentThreadCpuTime();
-				BigArray incomingArray = (BigArray) in.readObject();
+//				BigArray incomingArray = (BigArray) in.readObject();
+				
+				int size = (int) in.readUnshared();
+				BigArray incomingArray = new BigArray(size);
+				incomingArray.getRemoteBoundary(in);
+				incomingArray.inputFromStream(in, incomingArray.get_start(), incomingArray.get_end());
+				
 				long end = threadMXBean.getCurrentThreadCpuTime();
 				System.out.println("Done! Transmission time = " + (end-start)/1000000.0 + "ms");
 				

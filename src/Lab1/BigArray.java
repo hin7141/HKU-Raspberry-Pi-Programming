@@ -513,6 +513,17 @@ public class BigArray implements Serializable {
     
     private int step = 100;
     
+    public void setRemoteBoundary(ObjectOutputStream out, int start, int end) throws ClassNotFoundException, IOException{
+    	int boundary[] = {start, end};
+    	out.writeUnshared(boundary);
+    }
+    
+    public void getRemoteBoundary(ObjectInputStream in) throws ClassNotFoundException, IOException{
+    	int boundary[] = (int[]) in.readUnshared();
+    	this.start = boundary[0];
+    	this.end = boundary[1];
+    }
+    
     public void inputFromStream(ObjectInputStream in, int start, int end) throws ClassNotFoundException, IOException{
     	int stage = 0;
 		for (int i=start; i<end+1; i = i+step){

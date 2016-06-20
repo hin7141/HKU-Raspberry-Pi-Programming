@@ -42,8 +42,12 @@ public class Master extends Thread {
 			// send out partitions
 			for(int i=0; i<workers.length; i++){
 				System.out.println("Sending partition " + i+1 + "...");
+				out[i].writeUnshared(array.size());
 				array.set_boundary(boundary[i+1][0], boundary[i+1][1]);
-				out[i].writeObject(array);
+				//out[i].writeObject(array);
+				
+				array.setRemoteBoundary(out[i], boundary[i+1][0], boundary[i+1][1]);
+				array.outputToStream(out[i], boundary[i+1][0], boundary[i+1][1]);
 			}
 			
 			// sort own partition
@@ -69,7 +73,7 @@ public class Master extends Thread {
 			
 			array.isSorted();
 			//System.out.println(array.toString());
-		} catch (IOException e){
+		} catch (IOException | ClassNotFoundException e){
 			e.printStackTrace();
 		}
 	}
