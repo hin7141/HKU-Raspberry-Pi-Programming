@@ -1,5 +1,7 @@
 package lab2_time;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.net.*;
 import java.util.Arrays;
 import java.io.*;
@@ -31,6 +33,9 @@ public class Master extends Thread {
 	public void run(){
 		ObjectOutputStream out[] = new ObjectOutputStream[workers.length];
 		ObjectInputStream in[] = new ObjectInputStream[workers.length];
+		
+		ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+		long start = threadMXBean.getCurrentThreadCpuTime();
 		
 		try {
 			
@@ -74,6 +79,9 @@ public class Master extends Thread {
 		} catch (IOException | ClassNotFoundException e){
 			e.printStackTrace();
 		}
+		
+		long end = threadMXBean.getCurrentThreadCpuTime();
+		System.out.println("Done! Transmission time = " + (end-start)/1000000.0 + "ms");
 	}
 	
 	
