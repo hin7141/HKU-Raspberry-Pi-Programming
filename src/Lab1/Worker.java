@@ -35,7 +35,7 @@ public class Worker extends Thread {
 //				BigArray incomingArray = (BigArray) in.readObject();
 				
 				int size = (int) in.readUnshared();
-				BigArray incomingArray = new BigArray(size);
+				BigArray incomingArray = new BigArray(size, false);
 				incomingArray.getRemoteBoundary(in);
 				incomingArray.inputFromStream(in, incomingArray.get_start(), incomingArray.get_end());
 				

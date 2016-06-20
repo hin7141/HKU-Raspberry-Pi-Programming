@@ -95,6 +95,15 @@ public class BigArray implements Serializable {
 		end = size-1;
 	}
 	
+	public BigArray(int size, boolean is_init) {
+		array = new long[size];
+		if(is_init){
+			this.initRandomCase();
+		}
+		start = 0;
+		end = size-1;
+	}
+	
 	public BigArray(long[] a){
 		array = a;
 	}
@@ -177,8 +186,7 @@ public class BigArray implements Serializable {
 			if(array[i+1]>=array[i]){
 				continue;
 			} else {
-				System.out.println("No. of Elements = "+array.length+"  NOT ORDERED!");
-				System.out.println(i);
+				System.out.println("No. of Elements = "+array.length+"  NOT ORDERED! ("+i+")");
 				return false;
 			}
 		}
@@ -529,10 +537,6 @@ public class BigArray implements Serializable {
     	int stage = 0;
 		for (int i=start; i<end+1; i = i+step){
 			long val[] = (long[]) in.readUnshared();
-//			for(int j=0; j<val.length; j++){
-//				System.out.print(val[j]+"-");
-//			}
-//			System.out.println();
 			System.arraycopy(val, 0, array, i, val.length);
 			
 			double percentage = (double)(i-start) / (end+1 - start) * 100;
@@ -540,10 +544,10 @@ public class BigArray implements Serializable {
 				System.out.print("\r");
 				System.out.print((int)percentage+"% ");
 				stage = (int)percentage + 1;
-				System.gc();
 			}
 		}
-		System.out.println();
+		System.out.print("\r");
+		System.out.println("100%");
 		
 	}
     
