@@ -158,6 +158,7 @@ public class BigArray implements Serializable {
 	}
 	
 	public void initRandomCase(){
+		System.out.println("Generating "+array.length+" Random Numbers...");
 		int size = array.length;
 		for (int i=0; i<size; i++){
 			array[i] = Math.round( Math.random()*(Math.pow(2, 63)-1) );
@@ -536,7 +537,8 @@ public class BigArray implements Serializable {
 			
 			double percentage = (double)(i-start) / (end+1 - start) * 100;
 			if(percentage>stage){
-				System.out.print((int)percentage+"%... ");
+				System.out.print("\r");
+				System.out.print((int)percentage+"% ");
 				stage = (int)percentage + 1;
 				System.gc();
 			}
