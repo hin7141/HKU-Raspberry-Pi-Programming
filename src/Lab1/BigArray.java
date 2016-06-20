@@ -424,7 +424,7 @@ public class BigArray implements Serializable {
     	long temp[] = new long[2];
     	int index;
     	while(true){
-    		String cmd = (String) in.readObject();
+    		String cmd = (String) in.readUnshared();
     		String params[] = cmd.split(",");
     		
         	if (params[0].equals("set")){
@@ -516,7 +516,7 @@ public class BigArray implements Serializable {
     public void inputFromStream(ObjectInputStream in, int start, int end) throws ClassNotFoundException, IOException{
     	int stage = 0;
 		for (int i=start; i<end+1; i = i+step){
-			long val[] = (long[]) in.readObject();
+			long val[] = (long[]) in.readUnshared();
 //			for(int j=0; j<val.length; j++){
 //				System.out.print(val[j]+"-");
 //			}
