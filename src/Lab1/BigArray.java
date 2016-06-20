@@ -177,6 +177,7 @@ public class BigArray implements Serializable {
 				continue;
 			} else {
 				System.out.println("No. of Elements = "+array.length+"  NOT ORDERED!");
+				System.out.println(i);
 				return false;
 			}
 		}
@@ -277,21 +278,21 @@ public class BigArray implements Serializable {
     public void mergesort()
     {
     	long temp[] = new long[end-start+1];
-        mergeSort(array, temp, start, end);
+        mergeSort(temp, start, end);
         
     }
 
-    private void mergeSort(long[] array, long[] temp, int left, int right)
+    private void mergeSort(long[] temp, int left, int right)
     {
         if (left < right) {
             int center = (left + right) / 2;
-            mergeSort(array, temp, left, center);
-            mergeSort(array, temp, center + 1, right);
-            merge(array, temp, left, center + 1, right);
+            mergeSort(temp, left, center);
+            mergeSort(temp, center + 1, right);
+            merge(temp, left, center + 1, right);
         }
     }
 
-    private void merge(long[] array, long[] temp, int leftPos,
+    private void merge(long[] temp, int leftPos,
             int rightPos, int rightEnd)
     {
         int leftEnd = rightPos - 1;
@@ -303,8 +304,7 @@ public class BigArray implements Serializable {
         while (leftPos <= leftEnd && rightPos <= rightEnd) {
             if (array[leftPos] < array[rightPos]) {
                 temp[tempPos++] = array[leftPos++];
-            }
-            else {
+            } else {
                 temp[tempPos++] = array[rightPos++];
             }
         }
@@ -333,6 +333,115 @@ public class BigArray implements Serializable {
 //    	merge(array, temp, 0, array1_size, this.size()-1);
 //    	
 //    }
+    
+    public void mergeAndReturn(ObjectOutputStream out, int leftStart, int rightStart, int rightEnd) throws ClassNotFoundException, IOException{
+    	long temp[] = new long[step];
+    	int temp_i=0;
+    	int left = leftStart, right = rightStart;
+    	
+    	while(left<rightStart && right<rightEnd+1){
+    		if(array[left]<array[right]){
+    			temp[temp_i++] = array[left++];
+    		} else {
+    			temp[temp_i++] = array[right++];
+    		}
+    		
+    		if(temp_i>=step){
+    			out.writeObject(temp);
+    			temp_i=0;
+    			temp = new long[step];
+    		}
+    	}
+    	
+    	while (left < rightStart) {
+            temp[temp_i++] = array[left++];
+            if(temp_i>=step){
+    			out.writeObject(temp);
+    			temp_i=0;
+    			temp = new long[step];
+    		}
+        }
+    	
+        while (right < rightEnd+1) {
+        	temp[temp_i++] = array[right++];
+        	if(temp_i>=step){
+    			out.writeObject(temp);
+    			temp_i=0;
+    			temp = new long[step];
+    		}
+        }
+        
+        if(temp_i>0){
+        	out.writeObject(Arrays.copyOf(temp, temp_i));
+        }
+		
+	}
+    
+//    public void mergeRemote(ObjectOutputStream out, ObjectInputStream in, int leftPos,
+//            int rightPos, int rightEnd) throws IOException, ClassNotFoundException
+//    {
+//        int leftEnd = rightPos - 1;
+//        int tempPos = leftPos - leftPos; // <-
+//        int left = leftPos; // <-
+//        long temp[] = new long[2];
+//
+//        int numElements = rightEnd - leftPos + 1;
+//
+//        while (leftPos <= leftEnd && rightPos <= rightEnd) {
+//            if (array[leftPos] < array[rightPos]) {
+//            	out.writeObject("set,"+array[leftPos++]+","+tempPos++);
+//            	out.reset();
+//            } else {
+//            	out.writeObject("set,"+array[rightPos++]+","+tempPos++);
+//            	out.reset();
+//            }
+//        }
+//
+//        while (leftPos <= leftEnd) {
+//        	out.writeObject("set,"+array[leftPos++]+","+tempPos++);
+//        	out.reset();
+//        }
+//        while (rightPos <= rightEnd) {
+//        	out.writeObject("set,"+array[rightPos++]+","+tempPos++);
+//        	out.reset();
+//        }
+//
+//        for (int i = 0; i < numElements; i++, rightEnd--) {
+//        	temp[1] = rightEnd - left;
+//        	out.writeObject("get,"+temp[1]);
+//        	out.reset();
+//        	temp[0] = (long) in.readObject();
+//            array[rightEnd] = temp[0]; //<-
+//        }
+//        System.out.println("done!");
+//        out.writeObject("end");
+//        out.reset();
+//
+//    }
+    
+    public void tempRemote(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException{
+    	long temp[] = new long[2];
+    	int index;
+    	while(true){
+    		String cmd = (String) in.readObject();
+    		String params[] = cmd.split(",");
+    		
+        	if (params[0].equals("set")){
+        		
+        		temp[0] = Long.parseLong(params[1]);
+        		temp[1] = Long.parseLong(params[2]);
+        		array[(int) temp[1]] = temp[0];
+        		
+        	} else if (params[0].equals("get")){
+        		index = Integer.parseInt(params[1]);
+        		out.writeObject(array[index]);
+        		out.reset();
+        		
+        	} else if(cmd.equals("end")){
+        		return;
+        	}
+    	}
+    }
     
     public void mergeParts(int leftStart, int rightStart, int rightEnd){
     	int i=leftStart;
@@ -407,6 +516,10 @@ public class BigArray implements Serializable {
     	int stage = 0;
 		for (int i=start; i<end+1; i = i+step){
 			long val[] = (long[]) in.readObject();
+//			for(int j=0; j<val.length; j++){
+//				System.out.print(val[j]+"-");
+//			}
+//			System.out.println();
 			System.arraycopy(val, 0, array, i, val.length);
 			
 			double percentage = (double)(i-start) / (end+1 - start) * 100;

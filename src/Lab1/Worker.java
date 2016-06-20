@@ -42,9 +42,14 @@ public class Worker extends Thread {
 				end = threadMXBean.getCurrentThreadCpuTime();
 				System.out.println("Done! Merging time = " + (end-start)/1000000.0 + "ms");
 				
-				System.out.println("Sending the merged array...");
-				incomingArray.outputToStream(out, incomingArray.get_start(), incomingArray.get_end());
+				System.out.println("Received the merged array from Master...");
+				incomingArray.inputFromStream(in, 0, incomingArray.get_start()-1);
 				System.out.println("All done!");
+				
+				System.out.println("Now return sorted array to Master");
+				incomingArray.mergeAndReturn(out, 0, incomingArray.get_start(), incomingArray.get_end());
+				System.out.println("Yay finished!");
+				
 				server.close();
 				
 			} catch (IOException | ClassNotFoundException e) {

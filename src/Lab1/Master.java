@@ -29,45 +29,49 @@ public class Master extends Thread {
 	
 	@Override
 	public void run(){
-		ObjectOutputStream out;
-		ObjectInputStream in;
-
-		// send out partitions
-		for(int i=0; i<workers.length; i++){
-			System.out.println("Sending partition " + i+1 + "...");
-			array.set_boundary(boundary[i+1][0], boundary[i+1][1]);
-			try {
-				out = new ObjectOutputStream(workers[i].getOutputStream());
-				out.writeObject(array);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}	
+		ObjectOutputStream out[] = new ObjectOutputStream[workers.length];
+		ObjectInputStream in[] = new ObjectInputStream[workers.length];
+		
+		try {
+			
+			for(int i=0; i<workers.length; i++){
+				out[i] = new ObjectOutputStream(workers[i].getOutputStream());
+				in[i] = new ObjectInputStream(workers[i].getInputStream());
+			}
+			
+			// send out partitions
+			for(int i=0; i<workers.length; i++){
+				System.out.println("Sending partition " + i+1 + "...");
+				array.set_boundary(boundary[i+1][0], boundary[i+1][1]);
+				out[i].writeObject(array);
+			}
+			
+			// sort own partition
+			System.out.println("Start sorting a part of the array...");
+			array.set_boundary(boundary[0][0], boundary[0][1]);
+			array.mergesort();
+			System.out.println("Done!");
+			
+			// collect partitions
+			for(int i=0; i<workers.length; i++){
+				try {
+					System.out.println("Waiting for partition " + i+1);
+					array.outputToStream(out[i], boundary[0][0], boundary[i][1]);
+					//array.inputFromStream(in[i], boundary[i+1][0], boundary[i+1][1]);
+					System.out.println("Get back merged array...");
+					array.inputFromStream(in[i], boundary[0][0], boundary[i+1][1]);
+					System.out.println("OK!");
+					
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}	
+			}
+			
+			array.isSorted();
+			//System.out.println(array.toString());
+		} catch (IOException e){
+			e.printStackTrace();
 		}
-		
-		// sort own partition
-		System.out.println("Start sorting a part of the array...");
-		array.set_boundary(boundary[0][0], boundary[0][1]);
-		array.mergesort();
-		System.out.println("Done!");
-		
-		// collect partitions
-		for(int i=0; i<workers.length; i++){
-			try {
-				System.out.println("Waiting for partition " + i+1);
-				in = new ObjectInputStream(workers[i].getInputStream());
-				array.inputFromStream(in, boundary[i+1][0], boundary[i+1][1]);
-				System.out.println("Merging array...");
-				array.mergeParts(0, boundary[i+1][0], boundary[i+1][1]);
-				System.out.println("OK!");
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}	
-		}
-		
-		array.isSorted();
-		//System.out.println(array.toString());
 	}
 	
 	
