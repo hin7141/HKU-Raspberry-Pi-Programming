@@ -59,10 +59,10 @@ public class Master extends Thread {
 			// collect partitions
 			for(int i=0; i<workers.length; i++){
 				try {
-					System.out.println("Waiting for partition " + i+1);
+					System.out.println("Sending the partition(s) to Worker " + i+1);
 					array.outputToStream(out[i], boundary[0][0], boundary[i][1]);
 					//array.inputFromStream(in[i], boundary[i+1][0], boundary[i+1][1]);
-					System.out.println("Get back merged array...");
+					System.out.println("Geting back the merged array...");
 					array.inputFromStream(in[i], boundary[0][0], boundary[i+1][1]);
 					System.out.println("OK!");
 					

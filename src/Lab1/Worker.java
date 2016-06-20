@@ -42,17 +42,17 @@ public class Worker extends Thread {
 				long end = threadMXBean.getCurrentThreadCpuTime();
 				System.out.println("Done! Transmission time = " + (end-start)/1000000.0 + "ms");
 				
-				System.out.println("Start merging the incoming Array...");
+				System.out.println("Start sorting the incoming Array...");
 				start = threadMXBean.getCurrentThreadCpuTime();
 				incomingArray.mergesort();
 				end = threadMXBean.getCurrentThreadCpuTime();
-				System.out.println("Done! Merging time = " + (end-start)/1000000.0 + "ms");
+				System.out.println("Done! Sorting time = " + (end-start)/1000000.0 + "ms");
 				
-				System.out.println("Received the merged array from Master...");
+				System.out.println("Get Master's part of the array...");
 				incomingArray.inputFromStream(in, 0, incomingArray.get_start()-1);
 				System.out.println("All done!");
 				
-				System.out.println("Now return sorted array to Master");
+				System.out.println("Now merge and return the sorted array to Master");
 				incomingArray.mergeAndReturn(out, 0, incomingArray.get_start(), incomingArray.get_end());
 				System.out.println("Yay finished!");
 				
