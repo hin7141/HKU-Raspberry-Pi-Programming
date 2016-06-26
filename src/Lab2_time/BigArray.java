@@ -35,11 +35,11 @@ public class BigArray implements Serializable {
 		BigArray ba = new BigArray(size);
 		
 		ba.isSorted();
-		long start = threadMXBean.getCurrentThreadCpuTime();
+		long start = System.currentTimeMillis();
 		ba.mergesort();
+		long end = System.currentTimeMillis();
 		ba.isSorted();
-		long end = threadMXBean.getCurrentThreadCpuTime();
-		System.out.println("Time = " + (end-start)/1000000.0 + "ms");
+		System.out.println("Time = " + (end-start)/1000.0 + "ms");
 
 	}
 	
