@@ -17,7 +17,6 @@ public class BigArray implements Serializable {
 
 	public static void main(String args[]){
 		
-		ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 //		int size = 1000000;
 //		BigArray big_array = new BigArray(size);
 //		long start = threadMXBean.getCurrentThreadCpuTime();
@@ -26,20 +25,20 @@ public class BigArray implements Serializable {
 //		big_array.isSorted();
 //		System.out.println("Time = " + (end-start)/1000000.0 + "ms");
 		
-//		guessBreakPoint2();
+		guessBreakPoint2();
 		
-		int size = 100000;
-		if(args.length>0){
-			size = Integer.parseInt(args[0]);
-		}
-		BigArray ba = new BigArray(size);
-		
-		ba.isSorted();
-		long start = System.currentTimeMillis();;
-		ba.mergesort();
-		long end = System.currentTimeMillis();;
-		ba.isSorted();
-		System.out.println("Time = " + (end-start)/1000.0 + "ms");
+//		int size = 100000;
+//		if(args.length>0){
+//			size = Integer.parseInt(args[0]);
+//		}
+//		BigArray ba = new BigArray(size);
+//		
+//		ba.isSorted();
+//		long start = System.currentTimeMillis();;
+//		ba.mergesort();
+//		long end = System.currentTimeMillis();;
+//		ba.isSorted();
+//		System.out.println("Time = " + (end-start)/1000.0 + "ms");
 
 	}
 	
@@ -76,8 +75,6 @@ public class BigArray implements Serializable {
 				ba.quicksort();
 				low = num+1;
 				System.out.println("ok");
-				maxMemory = runtime.maxMemory();
-				System.out.println("Max memory: "+maxMemory);
 			} catch(java.lang.OutOfMemoryError e) {
 				high = num-1;
 				System.out.println("out of memory");
